@@ -50,11 +50,6 @@ export function HeroSection() {
               <span>{HERO_DATA.secondaryCtaText}</span>
             </a>
           </div>
-
-          <div className="hero-meta-badge">
-            <span className="hero-status-dot" aria-hidden="true" />
-            <span>{HERO_DATA.location} · {HERO_DATA.status}</span>
-          </div>
         </div>
       </div>
     </section>

@@ -66,7 +66,11 @@ export function FeaturedProjectsSection() {
 
               {/* Card Body */}
               <div className="project-info-body">
-                <h3 className="project-title-text">{project.title}</h3>
+                <h3 className="project-title-text">
+                  <Link to={project.liveUrl} className="project-title-link">
+                    {project.title}
+                  </Link>
+                </h3>
                 <p className="project-desc-text">{project.description}</p>
 
                 {/* Technology Tags */}

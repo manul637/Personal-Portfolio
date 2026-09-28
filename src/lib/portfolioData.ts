@@ -206,7 +206,7 @@ export const FEATURED_PROJECTS: ProjectItem[] = [
       'Personal finance intelligence platform that helps students understand spending, build saving habits, and make better everyday financial decisions.',
     tags: ['React', 'Node.js', 'MongoDB', 'AI'],
     githubUrl: 'https://github.com/manul',
-    liveUrl: '/work',
+    liveUrl: '/projects/finora',
     accentColor: '#FFB800',
     featured: true,
   },
@@ -218,7 +218,7 @@ export const FEATURED_PROJECTS: ProjectItem[] = [
       'A modern salon website and lightweight management system that lets local salons manage services, pricing, offers, and content without touching code.',
     tags: ['React', 'Node.js', 'MongoDB', 'Cloudinary'],
     githubUrl: 'https://github.com/manul',
-    liveUrl: '/work',
+    liveUrl: '/projects/salonos',
     accentColor: '#EC4899',
     featured: true,
   },
@@ -230,7 +230,7 @@ export const FEATURED_PROJECTS: ProjectItem[] = [
       'An interactive computer-vision experience designed to make depth information easier to understand through an intuitive visual interface.',
     tags: ['Python', 'Computer Vision', 'AI', 'React'],
     githubUrl: 'https://github.com/manul',
-    liveUrl: '/work',
+    liveUrl: '/projects/depthwizard',
     accentColor: '#3B82F6',
     featured: true,
   },
@@ -268,7 +268,31 @@ export const SERVICES_DATA: ServiceItem[] = [
 
 export const CONTACT_INFO = {
   email: 'hello@manul.dev',
-  availability: 'Open for selected freelance & collaborations',
-  location: 'India · Working remotely',
-  responseTime: 'Usually within 24–48 hours',
+  availability: 'open for freelance/collaborations',
+  location: 'India / remote',
+  responseTime: '24–48 hours',
 }
+
+export const SOCIAL_LINKS = [
+  {
+    name: 'GitHub',
+    url: 'https://github.com/manul',
+    icon: 'github',
+  },
+  {
+    name: 'LinkedIn',
+    url: 'https://linkedin.com/in/manul',
+    icon: 'linkedin',
+  },
+  {
+    name: 'X',
+    url: 'https://x.com/manul',
+    icon: 'x',
+  },
+  {
+    name: 'Email',
+    url: 'mailto:hello@manul.dev',
+    icon: 'email',
+  },
+]
+

@@ -1,18 +1,13 @@
-import { useState, useEffect } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { useState, useEffect, type MouseEvent } from 'react'
+import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
 import { MenuIcon, CloseIcon } from './icons'
-
-const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/skills', label: 'Skills' },
-  { to: '/work', label: 'Work' },
-  { to: '/services', label: 'Services' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
-]
+import { getWhatsAppUrl } from '../config/site'
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const whatsAppUrl = getWhatsAppUrl()
 
   // Lock body scroll while mobile menu is open
   useEffect(() => {
@@ -26,34 +21,111 @@ export function Navbar() {
     }
   }, [isMobileMenuOpen])
 
+  // Active state calculations
+  const isSkillsActive = location.pathname === '/' && location.hash === '#skills'
+  const isHomeActive = location.pathname === '/' && !isSkillsActive
+
+  const handleSkillsClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    setIsMobileMenuOpen(false)
+
+    if (location.pathname === '/') {
+      const elem = document.getElementById('skills')
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth' })
+      }
+      navigate({ pathname: '/', hash: '#skills' }, { replace: false })
+    } else {
+      // Navigate to home with hash
+      navigate({ pathname: '/', hash: '#skills' })
+    }
+  }
+
+  const handleHomeClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    setIsMobileMenuOpen(false)
+    if (location.pathname === '/') {
+      if (location.hash) {
+        e.preventDefault()
+        navigate({ pathname: '/', hash: '' })
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
     <>
       <header className="navbar-fixed-container">
         {/* Desktop Floating Pill Navbar */}
         <nav className="navbar-desktop-pill" aria-label="Main Navigation">
-          <Link to="/" className="brand-logo">
+          <Link to="/" className="brand-logo" onClick={handleHomeClick}>
             MANUL<span className="brand-dot">.</span>
           </Link>
 
           <div className="nav-links-desktop">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.to === '/'}
-                className={({ isActive }) =>
-                  isActive ? 'nav-link-item active' : 'nav-link-item'
-                }
-              >
-                {link.label}
-              </NavLink>
-            ))}
+            <NavLink
+              to="/"
+              onClick={handleHomeClick}
+              className={() =>
+                isHomeActive ? 'nav-link-item active' : 'nav-link-item'
+              }
+            >
+              Home
+            </NavLink>
+
+            <a
+              href="#skills"
+              onClick={handleSkillsClick}
+              className={isSkillsActive ? 'nav-link-item active' : 'nav-link-item'}
+            >
+              Skills
+            </a>
+
+            <NavLink
+              to="/work"
+              className={({ isActive }) =>
+                isActive ? 'nav-link-item active' : 'nav-link-item'
+              }
+            >
+              Work
+            </NavLink>
+
+            <NavLink
+              to="/services"
+              className={({ isActive }) =>
+                isActive ? 'nav-link-item active' : 'nav-link-item'
+              }
+            >
+              Services
+            </NavLink>
+
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                isActive ? 'nav-link-item active' : 'nav-link-item'
+              }
+            >
+              About
+            </NavLink>
+
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                isActive ? 'nav-link-item active' : 'nav-link-item'
+              }
+            >
+              Contact
+            </NavLink>
           </div>
 
           <div className="nav-actions-desktop">
-            <Link to="/contact" className="nav-cta-btn">
-              Contact me
-            </Link>
+            <a
+              href={whatsAppUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-cta-btn"
+            >
+              WhatsApp Me
+            </a>
             <div className="nav-status-ring" title="Available for work">
               <div className="nav-status-ring-dot" />
             </div>
@@ -86,7 +158,7 @@ export function Navbar() {
           <Link
             to="/"
             className="brand-logo"
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={handleHomeClick}
           >
             MANUL<span className="brand-dot">.</span>
           </Link>
@@ -102,30 +174,76 @@ export function Navbar() {
         </div>
 
         <nav className="mobile-nav-links">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.to === '/'}
-              className={({ isActive }) =>
-                isActive ? 'mobile-nav-item active' : 'mobile-nav-item'
-              }
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.label}
-            </NavLink>
-          ))}
+          <NavLink
+            to="/"
+            className={() =>
+              isHomeActive ? 'mobile-nav-item active' : 'mobile-nav-item'
+            }
+            onClick={handleHomeClick}
+          >
+            Home
+          </NavLink>
+
+          <a
+            href="#skills"
+            onClick={handleSkillsClick}
+            className={isSkillsActive ? 'mobile-nav-item active' : 'mobile-nav-item'}
+          >
+            Skills
+          </a>
+
+          <NavLink
+            to="/work"
+            className={({ isActive }) =>
+              isActive ? 'mobile-nav-item active' : 'mobile-nav-item'
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Work
+          </NavLink>
+
+          <NavLink
+            to="/services"
+            className={({ isActive }) =>
+              isActive ? 'mobile-nav-item active' : 'mobile-nav-item'
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Services
+          </NavLink>
+
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              isActive ? 'mobile-nav-item active' : 'mobile-nav-item'
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            About
+          </NavLink>
+
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              isActive ? 'mobile-nav-item active' : 'mobile-nav-item'
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Contact
+          </NavLink>
         </nav>
 
         <div className="mobile-nav-bottom">
-          <Link
-            to="/contact"
+          <a
+            href={whatsAppUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-primary"
             style={{ width: '100%', textAlign: 'center' }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Contact me →
-          </Link>
+            WhatsApp Me
+          </a>
         </div>
       </div>
     </>

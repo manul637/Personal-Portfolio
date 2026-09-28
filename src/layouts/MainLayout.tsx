@@ -1,9 +1,37 @@
-import { Outlet } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Navbar } from '../components/Navbar'
 import { Footer } from '../components/Footer'
 import { SparkleIcon } from '../components/icons'
 
 export default function MainLayout() {
+  const location = useLocation()
+
+  // Handle hash scrolling when navigating across routes (e.g. /work -> /#skills)
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '')
+      const scrollToTarget = () => {
+        const elem = document.getElementById(id)
+        if (elem) {
+          elem.scrollIntoView({ behavior: 'smooth' })
+          return true
+        }
+        return false
+      }
+
+      // Try scrolling immediately, with short timeout fallbacks for route transition rendering
+      if (!scrollToTarget()) {
+        const timer1 = setTimeout(scrollToTarget, 50)
+        const timer2 = setTimeout(scrollToTarget, 150)
+        return () => {
+          clearTimeout(timer1)
+          clearTimeout(timer2)
+        }
+      }
+    }
+  }, [location.pathname, location.hash])
+
   return (
     <div className="site-shell">
       {/* Ambient Radial Yellow Glow Effects */}

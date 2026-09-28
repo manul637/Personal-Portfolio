@@ -1,7 +1,23 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { GithubIcon, LinkedinIcon, TwitterIcon, ArrowRightIcon } from './icons'
 
 export function Footer() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const handleSkillsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    if (location.pathname === '/') {
+      const elem = document.getElementById('skills')
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth' })
+      }
+      navigate({ pathname: '/', hash: '#skills' }, { replace: false })
+    } else {
+      navigate({ pathname: '/', hash: '#skills' })
+    }
+  }
+
   return (
     <footer className="site-footer">
       {/* Ambient Radial Glow behind Footer */}
@@ -43,9 +59,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/skills" className="footer-link">
+                <a href="#skills" onClick={handleSkillsClick} className="footer-link">
                   Skills
-                </Link>
+                </a>
               </li>
               <li>
                 <Link to="/work" className="footer-link">
