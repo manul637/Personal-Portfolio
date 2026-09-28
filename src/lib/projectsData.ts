@@ -707,6 +707,10 @@ export function getAllProjects(): ProjectDetail[] {
   return PROJECTS_DATA
 }
 
+export function getFeaturedProjects(): ProjectDetail[] {
+  return PROJECTS_DATA.filter((p) => p.featured)
+}
+
 export function getProjectBySlug(slug: string): ProjectDetail | undefined {
   if (!slug) return undefined
   const normalized = slug.trim().toLowerCase()

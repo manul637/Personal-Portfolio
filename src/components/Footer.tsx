@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { GithubIcon, LinkedinIcon, TwitterIcon, ArrowRightIcon } from './icons'
+import { SITE_CONFIG } from '../config/site'
 
 export function Footer() {
   const location = useLocation()
@@ -82,9 +83,9 @@ export function Footer() {
             <ul className="footer-links-list">
               <li>
                 <a
-                  href="https://github.com/manul"
+                  href={SITE_CONFIG.social.github}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="footer-link"
                 >
                   <GithubIcon />
@@ -93,9 +94,9 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://linkedin.com/in/manul"
+                  href={SITE_CONFIG.social.linkedin}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="footer-link"
                 >
                   <LinkedinIcon />
@@ -104,9 +105,9 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://x.com/manul"
+                  href={SITE_CONFIG.social.x}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="footer-link"
                 >
                   <TwitterIcon />

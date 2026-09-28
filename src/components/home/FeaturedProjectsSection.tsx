@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
-import { FEATURED_PROJECTS } from '../../lib/portfolioData'
+import { getFeaturedProjects } from '../../lib/projectsData'
 import { SectionHeader } from '../ui/SectionHeader'
 import { Tag } from '../ui/Tag'
 import { GithubIcon, ExternalLinkIcon } from '../icons'
 
 export function FeaturedProjectsSection() {
+  const featuredProjects = getFeaturedProjects()
   return (
     <section id="featured-projects" className="section-wrapper">
       <div className="container">
@@ -18,8 +19,8 @@ export function FeaturedProjectsSection() {
 
         {/* 3-Column Projects Grid */}
         <div className="projects-grid">
-          {FEATURED_PROJECTS.map((project) => (
-            <article key={project.id} className="project-card-item">
+          {featuredProjects.map((project) => (
+            <article key={project.slug} className="project-card-item">
               {/* Image Banner with Action Icons & Domain Badge */}
               <div
                 className="project-image-box"
@@ -32,19 +33,21 @@ export function FeaturedProjectsSection() {
 
                 {/* Top-Right Action Buttons */}
                 <div className="project-action-icons">
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="project-action-circle"
-                    aria-label={`View ${project.title} on GitHub`}
-                  >
-                    <GithubIcon width={16} height={16} />
-                  </a>
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="project-action-circle"
+                      aria-label={`View ${project.title} on GitHub`}
+                    >
+                      <GithubIcon width={16} height={16} />
+                    </a>
+                  )}
                   <Link
-                    to={project.liveUrl}
+                    to={`/projects/${project.slug}`}
                     className="project-action-circle"
-                    aria-label={`View ${project.title} live demo`}
+                    aria-label={`View ${project.title} case study`}
                   >
                     <ExternalLinkIcon width={15} height={15} />
                   </Link>
@@ -67,11 +70,11 @@ export function FeaturedProjectsSection() {
               {/* Card Body */}
               <div className="project-info-body">
                 <h3 className="project-title-text">
-                  <Link to={project.liveUrl} className="project-title-link">
+                  <Link to={`/projects/${project.slug}`} className="project-title-link">
                     {project.title}
                   </Link>
                 </h3>
-                <p className="project-desc-text">{project.description}</p>
+                <p className="project-desc-text">{project.shortDescription}</p>
 
                 {/* Technology Tags */}
                 <div className="project-tags-row">

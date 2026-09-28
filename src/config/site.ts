@@ -14,6 +14,14 @@ export const SITE_CONFIG = {
     phoneNumber: '919302663171',
     defaultMessage: 'Hi Manul! I found your portfolio and would like to discuss a project.',
   },
+
+  // Social Links
+  social: {
+    github: 'https://github.com/manul637',
+    linkedin: 'https://linkedin.com/in/YOUR_LINKEDIN_USERNAME', // [TODO: Replace with actual LinkedIn username]
+    x: 'https://x.com/YOUR_X_HANDLE', // [TODO: Replace with actual X handle]
+    email: 'hello@manul.dev', // [TODO: Replace with actual email if different]
+  },
 }
 
 /**

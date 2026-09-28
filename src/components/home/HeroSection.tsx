@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { HERO_DATA } from '../../lib/portfolioData'
 import { ArrowRightIcon } from '../icons'
-import heroPortrait from '../../assets/hero_portrait.jpg'
+import heroPortrait from '../../assets/hero_portrait.webp'
 
 export function HeroSection() {
   return (
@@ -20,6 +20,8 @@ export function HeroSection() {
               <img
                 src={heroPortrait}
                 alt="Manul - Creative Web & Frontend Developer"
+                width={896}
+                height={1200}
                 className="hero-portrait-img"
               />
             </div>

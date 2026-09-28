@@ -1,14 +1,4 @@
-export interface ProjectItem {
-  id: string
-  title: string
-  category: string
-  description: string
-  tags: string[]
-  githubUrl: string
-  liveUrl: string
-  accentColor: string
-  featured?: boolean
-}
+import { SITE_CONFIG } from '../config/site'
 
 export interface SkillItem {
   id: string
@@ -197,44 +187,6 @@ export const SKILLS_DATA: SkillItem[] = [
   },
 ]
 
-export const FEATURED_PROJECTS: ProjectItem[] = [
-  {
-    id: 'finora',
-    title: 'Finora',
-    category: 'FINTECH · AI · PRODUCT',
-    description:
-      'Personal finance intelligence platform that helps students understand spending, build saving habits, and make better everyday financial decisions.',
-    tags: ['React', 'Node.js', 'MongoDB', 'AI'],
-    githubUrl: 'https://github.com/manul',
-    liveUrl: '/projects/finora',
-    accentColor: '#FFB800',
-    featured: true,
-  },
-  {
-    id: 'salonos',
-    title: 'SalonOS',
-    category: 'WEB APP · CMS',
-    description:
-      'A modern salon website and lightweight management system that lets local salons manage services, pricing, offers, and content without touching code.',
-    tags: ['React', 'Node.js', 'MongoDB', 'Cloudinary'],
-    githubUrl: 'https://github.com/manul',
-    liveUrl: '/projects/salonos',
-    accentColor: '#EC4899',
-    featured: true,
-  },
-  {
-    id: 'depthwizard',
-    title: 'DepthWizard',
-    category: 'AI · COMPUTER VISION',
-    description:
-      'An interactive computer-vision experience designed to make depth information easier to understand through an intuitive visual interface.',
-    tags: ['Python', 'Computer Vision', 'AI', 'React'],
-    githubUrl: 'https://github.com/manul',
-    liveUrl: '/projects/depthwizard',
-    accentColor: '#3B82F6',
-    featured: true,
-  },
-]
 
 export const SERVICES_DATA: ServiceItem[] = [
   {
@@ -276,22 +228,22 @@ export const CONTACT_INFO = {
 export const SOCIAL_LINKS = [
   {
     name: 'GitHub',
-    url: 'https://github.com/manul',
+    url: SITE_CONFIG.social.github,
     icon: 'github',
   },
   {
     name: 'LinkedIn',
-    url: 'https://linkedin.com/in/manul',
+    url: SITE_CONFIG.social.linkedin,
     icon: 'linkedin',
   },
   {
     name: 'X',
-    url: 'https://x.com/manul',
+    url: SITE_CONFIG.social.x,
     icon: 'x',
   },
   {
     name: 'Email',
-    url: 'mailto:hello@manul.dev',
+    url: `mailto:${SITE_CONFIG.social.email}`,
     icon: 'email',
   },
 ]

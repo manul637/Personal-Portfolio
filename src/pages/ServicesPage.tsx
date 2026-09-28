@@ -5,7 +5,7 @@ import { ServiceCard } from '../components/services/ServiceCard'
 import { ProcessTimeline } from '../components/services/ProcessTimeline'
 import { WhyWorkWithMe } from '../components/services/WhyWorkWithMe'
 import { ServicesCta } from '../components/services/ServicesCta'
-import { DETAILED_SERVICES } from '../../src/lib/servicesData'
+import { DETAILED_SERVICES } from '../lib/servicesData'
 import { SparkleIcon } from '../components/icons'
 
 const SERVICE_CATEGORIES = [
@@ -38,7 +38,6 @@ export default function ServicesPage() {
 
   useEffect(() => {
     document.title = 'Services — MANUL. | Creative Developer · AI · Digital Products'
-    window.scrollTo({ top: 0, behavior: 'instant' })
 
     // Set meta description
     const metaDesc = document.querySelector('meta[name="description"]')

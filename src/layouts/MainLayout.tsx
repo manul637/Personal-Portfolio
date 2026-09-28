@@ -7,7 +7,7 @@ import { SparkleIcon } from '../components/icons'
 export default function MainLayout() {
   const location = useLocation()
 
-  // Handle hash scrolling when navigating across routes (e.g. /work -> /#skills)
+  // Global scroll restoration & hash navigation
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace('#', '')
@@ -29,6 +29,9 @@ export default function MainLayout() {
           clearTimeout(timer2)
         }
       }
+    } else {
+      // Standard page transition: scroll to top
+      window.scrollTo(0, 0)
     }
   }, [location.pathname, location.hash])
 

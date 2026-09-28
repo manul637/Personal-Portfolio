@@ -23,9 +23,8 @@ export default function ProjectDetailPage() {
   const adjacent = slug ? getAdjacentProjects(slug) : {}
   const allProjects = getAllProjects()
 
-  // Scroll to top on slug change and set document title
+  // Set document title on project/slug change
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
     if (project) {
       document.title = `${project.title} — Case Study | MANUL.`
     } else {
