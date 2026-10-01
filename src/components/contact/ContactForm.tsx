@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { submitContactForm } from '../../services/contactService'
 import {
   CheckCircleIcon,
   AlertCircleIcon,
@@ -92,7 +93,7 @@ export function ContactForm({
     }
   }
 
-  function submitForm() {
+  async function submitForm() {
     if (!validate()) {
       return
     }
@@ -100,27 +101,26 @@ export function ContactForm({
     setStatus('loading')
     setErrorMessage('')
 
-    // Mock submission handler (as instructed: no Supabase connection yet)
-    setTimeout(() => {
-      // Simulate error trigger if testing with error@test.com or name "TriggerError"
-      if (
-        formData.email.toLowerCase() === 'error@test.com' ||
-        formData.name.trim().toLowerCase() === 'triggererror'
-      ) {
-        setStatus('error')
-        setErrorMessage(
-          'Failed to deliver your message due to a connection timeout. Please retry or contact directly.'
-        )
-        return
-      }
+    try {
+      await submitContactForm({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        project_type: formData.projectType.trim() || 'General Inquiry',
+        message: formData.message.trim(),
+      })
 
       setStatus('success')
-    }, 800)
+    } catch {
+      setStatus('error')
+      setErrorMessage(
+        'Failed to deliver your message due to a connection error. Please retry or contact directly.'
+      )
+    }
   }
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    submitForm()
+    void submitForm()
   }
 
   function handleResetForm() {
@@ -188,7 +188,9 @@ export function ContactForm({
             <button
               type="button"
               className="btn-primary"
-              onClick={submitForm}
+              onClick={() => {
+                void submitForm()
+              }}
             >
               <RefreshCwIcon />
               <span>Retry Now</span>
