@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { getProjectBySlug, getAdjacentProjects, getAllProjects } from '../lib/projectsData'
+import { getAllProjects, computeAdjacentProjects } from '../services/projectService'
+import type { ProjectDetail } from '../types/project'
 import { Container } from '../components/ui/Container'
 import { Button } from '../components/ui/Button'
 import { Tag } from '../components/ui/Tag'
@@ -19,18 +20,97 @@ export default function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
 
-  const project = slug ? getProjectBySlug(slug) : undefined
-  const adjacent = slug ? getAdjacentProjects(slug) : {}
-  const allProjects = getAllProjects()
+  const [project, setProject] = useState<ProjectDetail | null>(null)
+  const [allProjects, setAllProjects] = useState<ProjectDetail[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!slug) return
+    const currentSlug = slug
+    let isMounted = true
+
+    async function fetchProjectData() {
+      try {
+        setLoading(true)
+        setError(null)
+        const projects = await getAllProjects()
+        if (isMounted) {
+          setAllProjects(projects)
+          const target = projects.find(
+            (p) => p.slug.toLowerCase() === currentSlug.trim().toLowerCase()
+          ) || null
+          setProject(target)
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error(`Failed to load project "${slug}" from Supabase:`, err)
+          setError(
+            err instanceof Error ? err.message : 'Failed to load project from database.'
+          )
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchProjectData()
+
+    return () => {
+      isMounted = false
+    }
+  }, [slug])
 
   // Set document title on project/slug change
   useEffect(() => {
     if (project) {
       document.title = `${project.title} — Case Study | MANUL.`
-    } else {
+    } else if (!loading) {
       document.title = `Project Not Found | MANUL.`
     }
-  }, [slug, project])
+  }, [project, loading])
+
+  const adjacent = slug && allProjects.length > 0 ? computeAdjacentProjects(allProjects, slug) : {}
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="section-wrapper project-not-found-wrapper">
+        <Container>
+          <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)' }}>
+            <span className="form-spinner" style={{ display: 'inline-block', marginBottom: '16px' }} />
+            <p>Loading project details...</p>
+          </div>
+        </Container>
+      </div>
+    )
+  }
+
+  // Database error state
+  if (error) {
+    return (
+      <div className="section-wrapper project-not-found-wrapper">
+        <Container>
+          <div className="project-not-found-card">
+            <span className="not-found-badge">DATABASE · ERROR</span>
+            <h1 className="not-found-title">Unable to Load Project</h1>
+            <p className="not-found-desc">{error}</p>
+
+            <div className="not-found-actions">
+              <Button variant="primary" onClick={() => window.location.reload()}>
+                Retry
+              </Button>
+              <Button variant="secondary" onClick={() => navigate('/projects')}>
+                Browse All Projects
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </div>
+    )
+  }
 
   // Sensible fallback for invalid or non-existent slugs
   if (!project) {

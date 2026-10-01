@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { SKILLS_DATA, type SkillItem } from '../../lib/portfolioData'
+import { useState, useEffect } from 'react'
+import { getAllSkills } from '../../services/skillService'
+import type { SkillItem } from '../../lib/portfolioData'
 import { SectionHeader } from '../ui/SectionHeader'
 
 const CATEGORIES = ['All Technologies', 'Frontend', 'Backend', 'AI & Data', 'Tools'] as const
@@ -7,12 +8,45 @@ type Category = (typeof CATEGORIES)[number]
 
 export function SkillsSection() {
   const [activeCategory, setActiveCategory] = useState<Category>('All Technologies')
+  const [skills, setSkills] = useState<SkillItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [reloadKey, setReloadKey] = useState(0)
+
+  useEffect(() => {
+    let isMounted = true
+
+    getAllSkills()
+      .then((data) => {
+        if (isMounted) {
+          setSkills(data)
+          setError(null)
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          console.error('Failed to load skills from Supabase:', err)
+          setError(
+            err instanceof Error ? err.message : 'Failed to load skills from database.'
+          )
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [reloadKey])
 
   // Filter skills based on selected category, defaulting to top 4 for initial view
   const filteredSkills =
     activeCategory === 'All Technologies'
-      ? SKILLS_DATA.slice(0, 4) // Show standard 4 top skills (JS, React, Next, Tailwind)
-      : SKILLS_DATA.filter((s) => s.category === activeCategory)
+      ? skills.slice(0, 4) // Show standard 4 top skills (JS, React, Next, Tailwind)
+      : skills.filter((s) => s.category === activeCategory)
 
   // Custom icon renderer per skill
   function renderSkillIcon(skill: SkillItem) {
@@ -120,13 +154,45 @@ export function SkillsSection() {
 
         {/* Skills Cards Grid */}
         <div className="skills-grid">
-          {filteredSkills.map((skill) => (
-            <div key={skill.id} className="skill-card-item">
-              <div className="skill-icon-wrapper">{renderSkillIcon(skill)}</div>
-              <h3 className="skill-name-text">{skill.name}</h3>
-              <span className="skill-category-label">{skill.category}</span>
+          {loading && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>
+              <span className="form-spinner" style={{ display: 'inline-block', marginBottom: '12px' }} />
+              <p>Loading skills...</p>
             </div>
-          ))}
+          )}
+
+          {error && !loading && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', color: 'var(--text-muted)' }}>
+              <p style={{ color: 'var(--color-danger, #ef4444)', marginBottom: '12px' }}>{error}</p>
+              <button
+                type="button"
+                className="btn-primary"
+                style={{ display: 'inline-flex', padding: '8px 16px', fontSize: '13px' }}
+                onClick={() => {
+                  setLoading(true)
+                  setReloadKey((k) => k + 1)
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && filteredSkills.length === 0 && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', color: 'var(--text-muted)' }}>
+              <p>No skills found in this category.</p>
+            </div>
+          )}
+
+          {!loading &&
+            !error &&
+            filteredSkills.map((skill) => (
+              <div key={skill.id} className="skill-card-item">
+                <div className="skill-icon-wrapper">{renderSkillIcon(skill)}</div>
+                <h3 className="skill-name-text">{skill.name}</h3>
+                <span className="skill-category-label">{skill.category}</span>
+              </div>
+            ))}
         </div>
       </div>
     </section>

@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getWhatsAppUrl } from '../config/site'
-import { getAllProjects } from '../lib/projectsData'
+import { getAllProjects } from '../services/projectService'
+import { useProfile } from '../context/ProfileContext'
+import { formatWhatsAppUrl } from '../services/profileService'
+import type { ProjectDetail } from '../types/project'
 import { Container } from '../components/ui/Container'
 import { SectionHeader } from '../components/ui/SectionHeader'
 import { Tag } from '../components/ui/Tag'
@@ -10,14 +13,50 @@ import {
   ExternalLinkIcon,
   ArrowRightIcon,
   SparkleIcon,
+  RefreshCwIcon,
 } from '../components/icons'
 
 type FilterCategory = 'All' | 'Web Apps' | 'AI' | 'Fintech' | 'UI/UX'
 
 export default function WorkPage() {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('All')
-  const allProjects = getAllProjects()
-  const whatsAppUrl = getWhatsAppUrl()
+  const [allProjects, setAllProjects] = useState<ProjectDetail[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const { profile } = useProfile()
+  const whatsAppUrl = formatWhatsAppUrl(profile?.whatsappNumber) || getWhatsAppUrl()
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function fetchProjects() {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await getAllProjects()
+        if (isMounted) {
+          setAllProjects(data)
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error('Failed to load projects from Supabase:', err)
+          setError(
+            err instanceof Error ? err.message : 'Failed to load projects from database.'
+          )
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchProjects()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   // Filter projects based on active pill
   const filteredProjects =
@@ -154,14 +193,40 @@ export default function WorkPage() {
         <Container>
           <div className="work-grid-header">
             <h3 className="work-grid-count">
-              Showing {filteredProjects.length}{' '}
-              {filteredProjects.length === 1 ? 'Project' : 'Projects'}
+              {loading
+                ? 'Loading projects...'
+                : `Showing ${filteredProjects.length} ${filteredProjects.length === 1 ? 'Project' : 'Projects'}`}
             </h3>
           </div>
 
-          <div className="projects-grid">
-            {filteredProjects.map((project) => (
-              <article key={project.slug} className="project-card-item">
+          {loading && (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
+              <span className="form-spinner" style={{ display: 'inline-block', marginBottom: '16px' }} />
+              <p>Loading projects from database...</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="form-feedback-card error" style={{ maxWidth: '600px', margin: '30px auto' }}>
+              <h3 className="feedback-title error">Unable to Load Projects</h3>
+              <p className="feedback-desc">{error}</p>
+              <div className="feedback-actions">
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => window.location.reload()}
+                >
+                  <RefreshCwIcon />
+                  <span>Retry</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <div className="projects-grid">
+              {filteredProjects.map((project) => (
+                <article key={project.slug} className="project-card-item">
                 {/* Image Banner */}
                 <div
                   className="project-image-box"
@@ -230,7 +295,8 @@ export default function WorkPage() {
                 </div>
               </article>
             ))}
-          </div>
+            </div>
+          )}
         </Container>
       </section>
 

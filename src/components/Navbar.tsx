@@ -2,12 +2,16 @@ import { useState, useEffect, type MouseEvent } from 'react'
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
 import { MenuIcon, CloseIcon } from './icons'
 import { getWhatsAppUrl } from '../config/site'
+import { useProfile } from '../context/ProfileContext'
+import { formatWhatsAppUrl } from '../services/profileService'
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const whatsAppUrl = getWhatsAppUrl()
+  const { profile } = useProfile()
+  const brandName = profile?.name ? profile.name.toUpperCase() : 'MANUL'
+  const whatsAppUrl = formatWhatsAppUrl(profile?.whatsappNumber) || getWhatsAppUrl()
 
   // Lock body scroll while mobile menu is open
   useEffect(() => {
@@ -58,7 +62,7 @@ export function Navbar() {
         {/* Desktop Floating Pill Navbar */}
         <nav className="navbar-desktop-pill" aria-label="Main Navigation">
           <Link to="/" className="brand-logo" onClick={handleHomeClick}>
-            MANUL<span className="brand-dot">.</span>
+            {brandName}<span className="brand-dot">.</span>
           </Link>
 
           <div className="nav-links-desktop">
@@ -135,7 +139,7 @@ export function Navbar() {
         {/* Mobile Header Bar */}
         <div className="navbar-mobile-bar">
           <Link to="/" className="brand-logo">
-            MANUL<span className="brand-dot">.</span>
+            {brandName}<span className="brand-dot">.</span>
           </Link>
 
           <button
@@ -160,7 +164,7 @@ export function Navbar() {
             className="brand-logo"
             onClick={handleHomeClick}
           >
-            MANUL<span className="brand-dot">.</span>
+            {brandName}<span className="brand-dot">.</span>
           </Link>
 
           <button

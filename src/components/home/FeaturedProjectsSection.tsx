@@ -1,11 +1,38 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getFeaturedProjects } from '../../lib/projectsData'
+import { getFeaturedProjects } from '../../services/projectService'
+import type { ProjectDetail } from '../../types/project'
 import { SectionHeader } from '../ui/SectionHeader'
 import { Tag } from '../ui/Tag'
 import { GithubIcon, ExternalLinkIcon } from '../icons'
 
 export function FeaturedProjectsSection() {
-  const featuredProjects = getFeaturedProjects()
+  const [featuredProjects, setFeaturedProjects] = useState<ProjectDetail[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+
+    getFeaturedProjects()
+      .then((data) => {
+        if (isMounted) {
+          setFeaturedProjects(data)
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load featured projects from Supabase:', err)
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <section id="featured-projects" className="section-wrapper">
       <div className="container">
@@ -19,7 +46,13 @@ export function FeaturedProjectsSection() {
 
         {/* 3-Column Projects Grid */}
         <div className="projects-grid">
-          {featuredProjects.map((project) => (
+          {loading && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>
+              <span className="form-spinner" style={{ display: 'inline-block', marginBottom: '12px' }} />
+              <p>Loading featured projects...</p>
+            </div>
+          )}
+          {!loading && featuredProjects.map((project) => (
             <article key={project.slug} className="project-card-item">
               {/* Image Banner with Action Icons & Domain Badge */}
               <div

@@ -1,10 +1,20 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { GithubIcon, LinkedinIcon, TwitterIcon, ArrowRightIcon } from './icons'
 import { SITE_CONFIG } from '../config/site'
+import { useProfile } from '../context/ProfileContext'
 
 export function Footer() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { profile } = useProfile()
+
+  const brandName = profile?.name ? profile.name.toUpperCase() : 'MANUL'
+  const githubUrl = profile?.githubUrl || SITE_CONFIG.social.github
+  const linkedinUrl =
+    profile?.linkedinUrl ||
+    (SITE_CONFIG.social.linkedin.includes('YOUR_') ? null : SITE_CONFIG.social.linkedin)
+  const xUrl =
+    profile?.xUrl || (SITE_CONFIG.social.x.includes('YOUR_') ? null : SITE_CONFIG.social.x)
 
   const handleSkillsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
@@ -42,11 +52,11 @@ export function Footer() {
           {/* Brand Column */}
           <div className="footer-brand-col">
             <Link to="/" className="brand-logo" style={{ fontSize: '22px' }}>
-              MANUL<span className="brand-dot">.</span>
+              {brandName}<span className="brand-dot">.</span>
             </Link>
             <p className="footer-brand-desc">
-              Creative Developer · AI · Digital Products. Designing and building
-              modern, useful digital experiences with care.
+              {profile?.profession ? `${profile.profession}. ` : 'Creative Developer · AI · Digital Products. '}
+              {profile?.headline || 'Designing and building modern, useful digital experiences with care.'}
             </p>
           </div>
 
@@ -81,46 +91,52 @@ export function Footer() {
           <div>
             <h4 className="footer-col-title">CONNECT</h4>
             <ul className="footer-links-list">
-              <li>
-                <a
-                  href={SITE_CONFIG.social.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-link"
-                >
-                  <GithubIcon />
-                  <span>GitHub</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={SITE_CONFIG.social.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-link"
-                >
-                  <LinkedinIcon />
-                  <span>LinkedIn</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={SITE_CONFIG.social.x}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-link"
-                >
-                  <TwitterIcon />
-                  <span>X (Twitter)</span>
-                </a>
-              </li>
+              {githubUrl && (
+                <li>
+                  <a
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="footer-link"
+                  >
+                    <GithubIcon />
+                    <span>GitHub</span>
+                  </a>
+                </li>
+              )}
+              {linkedinUrl && (
+                <li>
+                  <a
+                    href={linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="footer-link"
+                  >
+                    <LinkedinIcon />
+                    <span>LinkedIn</span>
+                  </a>
+                </li>
+              )}
+              {xUrl && (
+                <li>
+                  <a
+                    href={xUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="footer-link"
+                  >
+                    <TwitterIcon />
+                    <span>X (Twitter)</span>
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
 
         {/* Bottom Copyright Bar */}
         <div className="footer-bottom-bar">
-          <p>© 2026 MANUL. Designed &amp; Built with curiosity.</p>
+          <p>© 2026 {brandName}. Designed &amp; Built with curiosity.</p>
         </div>
       </div>
     </footer>

@@ -2,8 +2,12 @@ import { CONTACT_INFO } from '../../lib/portfolioData'
 import { SectionHeader } from '../ui/SectionHeader'
 import { ContactForm } from '../contact/ContactForm'
 import { MailIcon, PhoneIcon, MapPinIcon } from '../icons'
+import { useProfile } from '../../context/ProfileContext'
 
 export function ContactSection() {
+  const { profile } = useProfile()
+  const email = profile?.email || CONTACT_INFO.email
+  const location = profile?.location || CONTACT_INFO.location
   return (
     <section id="contact" className="section-wrapper">
       <div className="container">
@@ -20,7 +24,7 @@ export function ContactSection() {
           {/* Left Column: Direct Info Cards */}
           <div className="contact-cards-stack">
             <a
-              href={`mailto:${CONTACT_INFO.email}`}
+              href={`mailto:${email}`}
               className="contact-info-pill-card"
             >
               <div className="contact-icon-circle">
@@ -28,7 +32,7 @@ export function ContactSection() {
               </div>
               <div className="contact-info-meta">
                 <span className="contact-card-label">Email</span>
-                <span className="contact-card-value">{CONTACT_INFO.email}</span>
+                <span className="contact-card-value">{email}</span>
               </div>
             </a>
 
@@ -48,7 +52,7 @@ export function ContactSection() {
               </div>
               <div className="contact-info-meta">
                 <span className="contact-card-label">Location</span>
-                <span className="contact-card-value">{CONTACT_INFO.location}</span>
+                <span className="contact-card-value">{location}</span>
               </div>
             </div>
           </div>
